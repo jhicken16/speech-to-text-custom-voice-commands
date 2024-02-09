@@ -108,23 +108,43 @@ function useTranscript(transcript, resetTranscript, finalTranscript){
 }
 
 
-function checkTrans(transcript, commands){
-  if (typeof transcript === 'undefined') {
-    // Handle the case when transcript is undefined
-    return;
+function useManageCommandWords(){
+
+  const [arrayOfStates, setArrayOfStates] = useState([])
+
+  function addNewState(value){
+    let neatString = value.toLowerCase()
+
+    //remove puctuation and any symbols.
+    neatString = neatString.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g, "")
+    const regex = new RegExp("[A-Z]*" + neatString + "[A-Z]*\\W*", "i")
+
+    
+
+    setArrayOfStates(prev => [...prev, useState(neatString)])
   }
-  console.log(transcript)
-  const lastPosition = transcript.lastIndexOf(' ')
-  const lastWord = transcript.substring(lastPosition + 1)
-  console.log(lastWord)
-  if(lastWord !== ''){
-    var regex = /[A-Z]*pop[A-Z]*\W*/i;
-    if(regex.test(lastWord)){
-      return commands(transcript)
-    }
-    else {
-      return transcript
-    }
-  }
-  
+
 }
+
+
+
+// function checkTrans(transcript, commands){
+//   if (typeof transcript === 'undefined') {
+//     // Handle the case when transcript is undefined
+//     return;
+//   }
+//   console.log(transcript)
+//   const lastPosition = transcript.lastIndexOf(' ')
+//   const lastWord = transcript.substring(lastPosition + 1)
+//   console.log(lastWord)
+//   if(lastWord !== ''){
+//     var regex = /[A-Z]*pop[A-Z]*\W*/i;
+//     if(regex.test(lastWord)){
+//       return commands(transcript)
+//     }
+//     else {
+//       return transcript
+//     }
+//   }
+  
+// }
