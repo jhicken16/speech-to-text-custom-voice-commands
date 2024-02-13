@@ -13,58 +13,121 @@ Users my choose command words that all end in the same letter.
 users may choose numbers, i will have to prevent this.
 users may choose signal letter as command witch my be a uppercase depending on browser 
 */
+import {useState} from 'react'
 
-export default class CommandsHash{
-    constructor(){
-        //this.hash = new Array(45).fill(null)
-        this.commands = {}
-    }
-    addToCommands(command, commandDescription, callback, argumentsToPass){
-        
-        command = this.cleanCommand(command)
-        const regex = this.createRegexExpression(command)
+export default function useCommandsHash(){
+    const [hash, setHash] = useState({})
 
-        if(this.commands[command[command.length - 1]]){
-            //add traverse linked list and to end
+    function addToCommands ( command, commandDescription, callback, argumentsToPass ) {
+                      
+        command = cleanCommand(command)
+        const regex = createRegexExpression(command)
+
+        if(hash.command[command.length - 1]){
+            
+            setHash(prev => ({
+                ...prev,
+                [command[command.length - 1]]: 
+                    [...prev[command[command.length - 1]], {
+                        command,
+                        regex, 
+                        commandDescription, 
+                        callback, 
+                        argumentsToPass
+                    }]
+            }))
         }
         else{
             //create new object and set it === to node in linked list.
-        }
-        
-        
-        
-        
-        
-        
-        
-        const ToPassIntoLinkedList = {
-            command,
-            regex,
-            description: commandDescription,
-            callback,
-            arguments
+            setHash(prev => ({...prev, 
+                [command[command.length - 1]]: [{
+                    command,
+                    regex, 
+                    commandDescription, 
+                    callback, 
+                    argumentsToPass
+                }]
+            }))
         }
     }
-    changeCommand(newCommand, oldCommand){
 
-        //TODO - Also change regex expression
+    function removeCommand( command ){
+            const hashKey = hash[command[command.length - 1]]
 
-        this.commands[newCommand] = this.commands[oldCommand]
-        delete this.commands[oldCommand]
-    }
-    changeFunction(command, callback, argumentsToPass){
-        this.commands[command].callback = callback
-        this.commands[command].arguments = argumentsToPass
-    }
-    removeCommand(command){
-        delete this.commands[command]
-    }
-    cleanCommand(word){
-        let neatString = word.toLowerCase()
-        //remove puctuation and any symbols.
-        return neatString.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g, "")
-    }
-    createRegexExpression(cleanWord){
-        return new RegExp("[A-Z]*" + cleanWord + "[A-Z]*\\W*", "i")
-    }
+            let removedObj = {}
+            for( let x = 0; x < hashKey.length; x++){
+                if(hashKey.state[x].regex.test(command)){
+                    removedObj = hashKey.state[x]
+                    setHash(prev => ({...prev,
+                        [command[command.length - 1]]: [
+                            ...hashKey.slice(0, x),
+                            ...hashKey.slice(x+1)
+                        ]
+                    }))
+                    if(hashKey.state.length === 0){
+                        delete hash[command[command.length - 1]]
+                    }
+                    return removedObj
+                }
+            }
+        }
+
+        function changeCommand( newCommand, oldCommand ){
+            //TODO - Also change regex expression
+            newCommand = this.cleanCommand(this.newCommand)
+            const newRegex = this.createRegexExpression(newCommand)
+
+            if(newCommand[newCommand.length - 1] === oldCommand[oldCommand.length - 1]){
+                setHash(prev => prev.map((obj) =>
+                obj.regex.test(oldCommand) ? {...obj, command: newCommand, regex: newRegex} : obj))
+            }
+            else{
+                let oldObject = this.removeCommand(oldCommand)
+                addToCommands(
+                    newCommand,
+                    newRegex, 
+                    oldObject.commandDescription, 
+                    oldObject.callback, 
+                    oldObject.argumentsToPass)
+            }
+        }
+
+        function cleanCommand( word ) {
+            let neatString = word.toLowerCase()
+            //remove punctuation and any symbols.
+            return neatString.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g, "")
+        }
+
+        function createRegexExpression( cleanWord ) {
+            return new RegExp("[A-Z]*" + cleanWord + "[A-Z]*\\W*", "i")
+        }
+
+        //Add function to check for commands and return what is needed.
+        function checkForCommand( transcript ) {
+
+            if(transcript === undefined){
+                return
+            }
+
+            const lastPosition = transcript.lastIndexOf(' ')
+            const lastWord = transcript.substring(lastPosition + 1)
+
+            const lastLetter = lastWord[lastWord.length - 1]
+            if(hash[lastLetter]){
+                for (let x = 0; x < hash[lastLetter].length; x++){
+                    if(hash[lastLetter].regex.test(lastWord)){
+                        //check what you need refactor this once you know exactly what you need
+                        return hash[lastLetter][x]
+                    }
+                }
+            }
+            return
+        }
+
+    return [hash, {addToCommands, removeCommand, changeCommand, checkForCommand}]
 }
+
+
+
+
+
