@@ -22,8 +22,8 @@ export default function useCommandsHash(){
                       
         command = cleanCommand(command)
         const regex = createRegexExpression(command)
-
-        if(hash.command[command.length - 1]){
+    
+        if(hash[command[command.length - 1]] !== undefined){
             
             setHash(prev => ({
                 ...prev,
@@ -111,12 +111,17 @@ export default function useCommandsHash(){
 
             const lastPosition = transcript.lastIndexOf(' ')
             const lastWord = transcript.substring(lastPosition + 1)
-
+            
             const lastLetter = lastWord[lastWord.length - 1]
+            
             if(hash[lastLetter]){
                 for (let x = 0; x < hash[lastLetter].length; x++){
-                    if(hash[lastLetter].regex.test(lastWord)){
+                    console.log(hash[lastLetter][x])
+                    if(hash[lastLetter][x].regex.test(lastWord)){
                         //check what you need refactor this once you know exactly what you need
+
+                        //TODO
+                        //need to return the index of the first and last letter aswell
                         return hash[lastLetter][x]
                     }
                 }
