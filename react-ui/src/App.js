@@ -1,10 +1,8 @@
 import React, {useState, useEffect, useRef}from 'react'
-
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import useCommandsHash from './dataStructures/CommandsHash'
 
 function App() {
-
-  //const [text, setText] = useState('')
   
   const {
     transcript,
@@ -15,13 +13,22 @@ function App() {
     finalTranscript,
   } = useSpeechRecognition()
 
-  const [text, changeState] = useTranscript(transcript, resetTranscript, finalTranscript)
+  const [hash, {addToCommands, removeCommand, changeCommand, checkForCommand}] = useCommandsHash()
 
+  const [text, changeState] = useTranscript(transcript, resetTranscript, finalTranscript, checkForCommand)
+
+  function notImportant(){
+    console.log('command triggered')
+  }
+  useEffect(() => {
+     addToCommands('pop', 'delete last word', notImportant, {key: 1, name: 'not important'})
+     
+  }, [])
   
-
   if(!browserSupportsSpeechRecognition){
     return <h1>sorry browser does not support.</h1>
   }
+
   return (
     <>
     <div>
@@ -50,27 +57,23 @@ function App() {
 
 export default App;
 
-function useTranscript(transcript, resetTranscript, finalTranscript){
- 
+function useTranscript(transcript, resetTranscript, finalTranscript, findCommandAndProcess){
+  //refactor this how to add and update command. function to add to hash.
   const [i, setI] = useState(0)
 
   const [text, setText] = useState('')
-  const [deleteLastWord, setDeleteLastWord] = useState('pop')
   const transcriptLengthRef = useRef(0)
   
-  const commands = (transcript) => {
-    console.log(transcript + 'delete')
-    return 'null'
-  }
+
   
 
-  const whichState = [setText, setDeleteLastWord]
+  const whichState = [setText]
 
   let callback = whichState[i]
   
   useEffect(() => {
 
-//transcript = checkTrans(transcript, commands)
+  //transcript = checkTrans(transcript, commands)
 
     if(finalTranscript !== ''){
 
@@ -89,9 +92,19 @@ function useTranscript(transcript, resetTranscript, finalTranscript){
       callback(prev => {
         if(prev.length){
 
+          /*
+            Here some where I need to check the last word added and check it against the command.
+
+            I have a function to retrieve all the information about the command from the hash. 
+
+            And im going to pass the index of first and last letter.
+              I will have to check the word is still in the same place. Because punctuation will be added in final transcript. 
+          */
+
+         console.log(findCommandAndProcess(transcript))
+
           return prev.substring(0, transcriptLengthRef.current) + ` ${transcript}`
         }
-
         return transcript
       })
     }
@@ -104,47 +117,6 @@ function useTranscript(transcript, resetTranscript, finalTranscript){
     setI(x)
   }
   
-  return [[text, deleteLastWord], changeState]
+  return [[text], changeState]
 }
 
-
-function useManageCommandWords(){
-
-  const [arrayOfStates, setArrayOfStates] = useState([])
-
-  function addNewState(value){
-    let neatString = value.toLowerCase()
-
-    //remove puctuation and any symbols.
-    neatString = neatString.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g, "")
-    const regex = new RegExp("[A-Z]*" + neatString + "[A-Z]*\\W*", "i")
-
-    
-
-    setArrayOfStates(prev => [...prev, useState(neatString)])
-  }
-
-}
-
-
-
-// function checkTrans(transcript, commands){
-//   if (typeof transcript === 'undefined') {
-//     // Handle the case when transcript is undefined
-//     return;
-//   }
-//   console.log(transcript)
-//   const lastPosition = transcript.lastIndexOf(' ')
-//   const lastWord = transcript.substring(lastPosition + 1)
-//   console.log(lastWord)
-//   if(lastWord !== ''){
-//     var regex = /[A-Z]*pop[A-Z]*\W*/i;
-//     if(regex.test(lastWord)){
-//       return commands(transcript)
-//     }
-//     else {
-//       return transcript
-//     }
-//   }
-  
-// }
