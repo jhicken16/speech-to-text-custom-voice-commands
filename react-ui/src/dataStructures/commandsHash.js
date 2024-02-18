@@ -110,7 +110,14 @@ export default function useCommandsHash(){
             }
 
             const lastPosition = transcript.lastIndexOf(' ')
+
+            //index of first letter
+            const firstLetterIndex = lastPosition + 1
+
             const lastWord = transcript.substring(lastPosition + 1)
+
+            //index of last letter 
+            const lastLetterIndex = firstLetterIndex + lastWord.length - 1
             
             const lastLetter = lastWord[lastWord.length - 1]
             
@@ -122,7 +129,11 @@ export default function useCommandsHash(){
 
                         //TODO
                         //need to return the index of the first and last letter aswell
-                        return hash[lastLetter][x]
+                        return {
+                            ...hash[lastLetter][x],
+                            lastLetterIndex,
+                            firstLetterIndex
+                        }
                     }
                 }
             }
