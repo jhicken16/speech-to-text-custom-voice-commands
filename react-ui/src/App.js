@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useRef}from 'react'
-
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import useCommandsHash from './dataStructures/commandsHash'
+import { deleteMethod } from './voiceMethods/commandFunctions'
+import Queue from './dataStructures/queue'
 
 function App() {
-
-  //const [text, setText] = useState('')
   
   const {
     transcript,
@@ -15,13 +15,21 @@ function App() {
     finalTranscript,
   } = useSpeechRecognition()
 
-  const [text, changeState] = useTranscript(transcript, resetTranscript, finalTranscript)
+  const [hash, {addToCommands, removeCommand, changeCommand, checkForCommand}] = useCommandsHash()
 
+
+  const queue = new Queue()
+  const [text, changeState] = useTranscript(transcript, resetTranscript, finalTranscript, checkForCommand, queue)
+
+  useEffect(() => {
+     addToCommands('pop', 'delete last word', deleteMethod, ' ')
+     
+  }, [])
   
-
   if(!browserSupportsSpeechRecognition){
     return <h1>sorry browser does not support.</h1>
   }
+
   return (
     <>
     <div>
@@ -50,34 +58,46 @@ function App() {
 
 export default App;
 
-function useTranscript(transcript, resetTranscript, finalTranscript){
- 
+function useTranscript(transcript, resetTranscript, finalTranscript, findCommandAndProcess, queue){
+  //refactor this how to add and update command. function to add to hash.
   const [i, setI] = useState(0)
 
   const [text, setText] = useState('')
-  const [deleteLastWord, setDeleteLastWord] = useState('pop')
   const transcriptLengthRef = useRef(0)
-  
-  const commands = (transcript) => {
-    console.log(transcript + 'delete')
-    return 'null'
-  }
-  
 
-  const whichState = [setText, setDeleteLastWord]
+  const queueRef = useRef(new Queue())
+  
+  const whichState = [setText]
 
   let callback = whichState[i]
   
   useEffect(() => {
 
-//transcript = checkTrans(transcript, commands)
-
     if(finalTranscript !== ''){
 
       callback(prev => {
-        const toAdd = prev.substring(0, transcriptLengthRef.current) + ' ' + finalTranscript
+        let toAdd = prev.substring(0, transcriptLengthRef.current) + ' ' + finalTranscript
 
-        transcriptLengthRef.current += finalTranscript.length+1
+        // check queue and process any functions
+        /*
+          queue works on first in first out. will change text on first command need to take last amount 
+          of text removed and change index of next element in queue by that amount.
+        */
+        while(queueRef.current.head !== null){
+          
+          let lengthBeforeEdit = toAdd.length
+
+          const head = queueRef.current.removeHead()
+          toAdd = head.data.callback(head.data.firstLetterIndex, head.data.lastLetterIndex, head.data.argumentsToPass, toAdd)
+
+          let lengthAfterEdit = toAdd.length
+
+          if(queueRef.current.head !== null){
+            queueRef.current.changeIndexes(lengthAfterEdit - lengthBeforeEdit)
+          }
+        }
+
+        transcriptLengthRef.current = toAdd.length+1
 
         return toAdd
       })
@@ -86,17 +106,36 @@ function useTranscript(transcript, resetTranscript, finalTranscript){
     }
 
     else if(transcript !== ''){
+      
+      //console.log(findCommandAndProcess(transcript))
+      const command = findCommandAndProcess(transcript)
+
+      if(command){
+        command.lastLetterIndex += transcriptLengthRef.current
+        command.firstLetterIndex += transcriptLengthRef.current
+        queueRef.current.addToQueue(command)
+        console.log(queueRef.current)
+      }
+      
       callback(prev => {
         if(prev.length){
 
+          /*
+            Here some where I need to check the last word added and check it against the command.
+
+            I have a function to retrieve all the information about the command from the hash. 
+
+            And im going to pass the index of first and last letter.
+              I will have to check the word is still in the same place. Because punctuation will be added in final transcript. 
+          */
+
           return prev.substring(0, transcriptLengthRef.current) + ` ${transcript}`
         }
-
         return transcript
       })
     }
 
-  }, [transcript, callback, finalTranscript,resetTranscript])
+  }, [transcript, callback, finalTranscript, resetTranscript])
 
 
   //this function is exported from hook and is used to change which state is updated with the transcript.
@@ -104,27 +143,6 @@ function useTranscript(transcript, resetTranscript, finalTranscript){
     setI(x)
   }
   
-  return [[text, deleteLastWord], changeState]
+  return [[text], changeState]
 }
 
-
-function checkTrans(transcript, commands){
-  if (typeof transcript === 'undefined') {
-    // Handle the case when transcript is undefined
-    return;
-  }
-  console.log(transcript)
-  const lastPosition = transcript.lastIndexOf(' ')
-  const lastWord = transcript.substring(lastPosition + 1)
-  console.log(lastWord)
-  if(lastWord !== ''){
-    var regex = /[A-Z]*pop[A-Z]*\W*/i;
-    if(regex.test(lastWord)){
-      return commands(transcript)
-    }
-    else {
-      return transcript
-    }
-  }
-  
-}
