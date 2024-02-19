@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useRef}from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import useCommandsHash from './dataStructures/commandsHash'
+import { deleteMethod } from './voiceMethods/commandFunctions'
+import Queue from './dataStructures/queue'
 
 function App() {
   
@@ -15,13 +17,12 @@ function App() {
 
   const [hash, {addToCommands, removeCommand, changeCommand, checkForCommand}] = useCommandsHash()
 
-  const [text, changeState] = useTranscript(transcript, resetTranscript, finalTranscript, checkForCommand)
 
-  function notImportant(){
-    console.log('command triggered')
-  }
+  const queue = new Queue()
+  const [text, changeState] = useTranscript(transcript, resetTranscript, finalTranscript, checkForCommand, queue)
+
   useEffect(() => {
-     addToCommands('pop', 'delete last word', notImportant, {key: 1, name: 'not important'})
+     addToCommands('pop', 'delete last word', deleteMethod, ' ')
      
   }, [])
   
@@ -57,28 +58,46 @@ function App() {
 
 export default App;
 
-function useTranscript(transcript, resetTranscript, finalTranscript, findCommandAndProcess){
+function useTranscript(transcript, resetTranscript, finalTranscript, findCommandAndProcess, queue){
   //refactor this how to add and update command. function to add to hash.
   const [i, setI] = useState(0)
 
   const [text, setText] = useState('')
   const transcriptLengthRef = useRef(0)
-  
 
+  const queueRef = useRef(new Queue())
+  
   const whichState = [setText]
 
   let callback = whichState[i]
   
   useEffect(() => {
 
-  //transcript = checkTrans(transcript, commands)
-
     if(finalTranscript !== ''){
 
       callback(prev => {
-        const toAdd = prev.substring(0, transcriptLengthRef.current) + ' ' + finalTranscript
+        let toAdd = prev.substring(0, transcriptLengthRef.current) + ' ' + finalTranscript
 
-        transcriptLengthRef.current += finalTranscript.length+1
+        // check queue and process any functions
+        /*
+          queue works on first in first out. will change text on first command need to take last amount 
+          of text removed and change index of next element in queue by that amount.
+        */
+        while(queueRef.current.head !== null){
+          
+          let lengthBeforeEdit = toAdd.length
+
+          const head = queueRef.current.removeHead()
+          toAdd = head.data.callback(head.data.firstLetterIndex, head.data.lastLetterIndex, head.data.argumentsToPass, toAdd)
+
+          let lengthAfterEdit = toAdd.length
+
+          if(queueRef.current.head !== null){
+            queueRef.current.changeIndexes(lengthAfterEdit - lengthBeforeEdit)
+          }
+        }
+
+        transcriptLengthRef.current = toAdd.length+1
 
         return toAdd
       })
@@ -87,6 +106,17 @@ function useTranscript(transcript, resetTranscript, finalTranscript, findCommand
     }
 
     else if(transcript !== ''){
+      
+      //console.log(findCommandAndProcess(transcript))
+      const command = findCommandAndProcess(transcript)
+
+      if(command){
+        command.lastLetterIndex += transcriptLengthRef.current
+        command.firstLetterIndex += transcriptLengthRef.current
+        queueRef.current.addToQueue(command)
+        console.log(queueRef.current)
+      }
+      
       callback(prev => {
         if(prev.length){
 
@@ -99,15 +129,13 @@ function useTranscript(transcript, resetTranscript, finalTranscript, findCommand
               I will have to check the word is still in the same place. Because punctuation will be added in final transcript. 
           */
 
-         console.log(findCommandAndProcess(transcript))
-
           return prev.substring(0, transcriptLengthRef.current) + ` ${transcript}`
         }
         return transcript
       })
     }
 
-  }, [transcript, callback, finalTranscript,resetTranscript])
+  }, [transcript, callback, finalTranscript, resetTranscript])
 
 
   //this function is exported from hook and is used to change which state is updated with the transcript.

@@ -117,13 +117,13 @@ export default function useCommandsHash(){
             const lastWord = transcript.substring(lastPosition + 1)
 
             //index of last letter 
-            const lastLetterIndex = firstLetterIndex + lastWord.length - 1
+            const lastLetterIndex = firstLetterIndex + lastWord.length + 1
             
             const lastLetter = lastWord[lastWord.length - 1]
             
             if(hash[lastLetter]){
                 for (let x = 0; x < hash[lastLetter].length; x++){
-                    console.log(hash[lastLetter][x])
+                    
                     if(hash[lastLetter][x].regex.test(lastWord)){
                         //check what you need refactor this once you know exactly what you need
 
