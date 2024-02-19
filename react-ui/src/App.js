@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef}from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-import useCommandsHash from './dataStructures/CommandsHash'
+import useCommandsHash from './dataStructures/commandsHash'
 
 function App() {
   
@@ -63,8 +63,6 @@ function useTranscript(transcript, resetTranscript, finalTranscript, findCommand
 
   const [text, setText] = useState('')
   const transcriptLengthRef = useRef(0)
-  
-
   
 
   const whichState = [setText]
