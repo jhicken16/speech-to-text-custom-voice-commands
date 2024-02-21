@@ -23,12 +23,19 @@ function App() {
 
 
   const queue = new Queue()
-  const [text, changeState] = useTranscript(transcript, resetTranscript, finalTranscript, checkForCommand, queue)
+  const [text, changeState, resetText] = useTranscript(transcript, resetTranscript, finalTranscript, checkForCommand, queue)
 
   useEffect(() => {
      addToCommands('pop', 'delete last word', deleteMethod, ' ')
      
   }, [])
+
+  function resetUserTranscript(){
+    
+    resetText()
+    resetTranscript()
+
+  }
   
   if(!browserSupportsSpeechRecognition){
     return <h1>sorry browser does not support.</h1>
@@ -44,6 +51,7 @@ function App() {
       }}>on</button>
       <button onClick={SpeechRecognition.stopListening}>off</button>
       <p>{text[0]}</p>
+      <button onClick={resetUserTranscript}>Clear Text</button>
     </div>
      <div>
       <CreateUserCommands addToCommands={addToCommands}/>
@@ -150,7 +158,12 @@ function useTranscript(transcript, resetTranscript, finalTranscript, findCommand
   function changeState(x){
     setI(x)
   }
+
+  function resetText(){
+    transcriptLengthRef.current = 0
+    setText('')
+  }
   
-  return [[text], changeState]
+  return [[text], changeState, resetText]
 }
 
