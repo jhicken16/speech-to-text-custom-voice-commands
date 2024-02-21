@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef}from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import useCommandsHash from './dataStructures/commandsHash'
-import { deleteMethod } from './voiceMethods/commandFunctions'
+import { deleteMethod, punctuationMethod } from './voiceMethods/commandFunctions'
 import Queue from './dataStructures/queue'
 
 //components
