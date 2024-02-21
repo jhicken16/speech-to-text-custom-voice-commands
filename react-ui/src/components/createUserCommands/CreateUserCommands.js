@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { deleteMethod } from "../../voiceMethods/commandFunctions";
+import { deleteMethod, punctuationMethod } from "../../voiceMethods/commandFunctions";
 
 export default function CreateUserCommands({addToCommands}){
 
@@ -19,13 +19,19 @@ export default function CreateUserCommands({addToCommands}){
                 func = deleteMethod
                 break;
             case "Add Punctuation":
-                func = ''/* TODO create add punctuation function */
+                func = punctuationMethod
                 break;
             default:
                 break;
         }
-        console.log(func)
+        
         addToCommands(command, description, func, selectedChar)
+
+        //these should be in an object think im going to cause a rerender after each hopefully function finishes before rerender triggered 
+        setCommand('')
+        setDescription('')
+        setSelectedFunction('')
+        setSelectedChar('')
     }
 
     const handleCommand = (event) => {

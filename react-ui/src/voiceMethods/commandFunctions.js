@@ -9,7 +9,7 @@ function deleteMethod(frontIndex, backIndex, to, text){
     
     //to skip space that is before command word.
     frontIndex -= 2
-    console.log(text[frontIndex])
+    
     // Make sure command was not the first word
     if(frontIndex < 1){
         return text
@@ -31,4 +31,23 @@ function deleteMethod(frontIndex, backIndex, to, text){
 
 }
 
-export { deleteMethod }
+function punctuationMethod(frontIndex, backIndex, to, text){
+
+    if(frontIndex < 1){
+        return text
+    }
+    for(frontIndex; frontIndex > 0; frontIndex--){
+        if (/[a-zA-Z]/.test(text[frontIndex])){
+            const beforeCommand = text.substring(0, frontIndex + 1)
+
+            const afterCommand = text.substring(backIndex)
+
+            return beforeCommand + to + afterCommand    
+        }
+    }
+
+    return text
+    
+}
+
+export { deleteMethod, punctuationMethod }
