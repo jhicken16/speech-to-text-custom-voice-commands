@@ -13,19 +13,22 @@ export default function CreateUserCommands({addToCommands}){
         event.preventDefault()
 
         let func = null
+        let funcType = null
         console.log(selectedFunction)
         switch (selectedFunction){
             case "Delete Command":
                 func = deleteMethod
+                funcType = 'DEL'
                 break;
             case "Add Punctuation":
                 func = punctuationMethod
+                funcType = 'PUNC'
                 break;
             default:
                 break;
         }
         
-        addToCommands(command, description, func, selectedChar)
+        addToCommands(command, description, func, selectedChar, funcType)
 
         //these should be in an object think im going to cause a rerender after each hopefully function finishes before rerender triggered 
         setCommand('')
