@@ -26,6 +26,12 @@ export default function CreateUserCommands({addToCommands}){
         }
         
         addToCommands(command, description, func, selectedChar)
+
+        //these should be in an object think im going to cause a rerender after each hopefully function finishes before rerender triggered 
+        setCommand('')
+        setDescription('')
+        setSelectedFunction('')
+        setSelectedChar('')
     }
 
     const handleCommand = (event) => {

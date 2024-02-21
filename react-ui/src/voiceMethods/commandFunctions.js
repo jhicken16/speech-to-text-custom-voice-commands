@@ -36,12 +36,18 @@ function punctuationMethod(frontIndex, backIndex, to, text){
     if(frontIndex < 1){
         return text
     }
+    for(frontIndex; frontIndex > 0; frontIndex--){
+        if (/[a-zA-Z]/.test(text[frontIndex])){
+            const beforeCommand = text.substring(0, frontIndex + 1)
 
-    const beforeCommand = text.substring(0, frontIndex)
+            const afterCommand = text.substring(backIndex)
 
-    const afterCommand = text.substring(backIndex)
+            return beforeCommand + to + afterCommand    
+        }
+    }
 
-    return beforeCommand + to + afterCommand    
+    return text
+    
 }
 
 export { deleteMethod, punctuationMethod }
