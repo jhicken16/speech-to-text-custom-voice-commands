@@ -4,6 +4,10 @@ import useCommandsHash from './dataStructures/commandsHash'
 import { deleteMethod } from './voiceMethods/commandFunctions'
 import Queue from './dataStructures/queue'
 
+//components
+import CreateUserCommands from './components/createUserCommands/CreateUserCommands'
+import DisplayCommands from './components/displayuserCommands/DisplayUserCommands'
+
 function App() {
   
   const {
@@ -15,7 +19,7 @@ function App() {
     finalTranscript,
   } = useSpeechRecognition()
 
-  const [hash, {addToCommands, removeCommand, changeCommand, checkForCommand}] = useCommandsHash()
+  const [hash, {addToCommands, removeCommand, changeCommand, checkForCommand, hashToArray}] = useCommandsHash()
 
 
   const queue = new Queue()
@@ -42,13 +46,18 @@ function App() {
       <p>{text[0]}</p>
     </div>
      <div>
-        <h3>Mic: {listening ? 'on' : 'off'}</h3>
-        <button onClick={() => {
-          changeState(1)
-          SpeechRecognition.startListening()
-        }}>on/off</button>
-        <h1>{text[1]}</h1>
-      
+      <CreateUserCommands addToCommands={addToCommands}/>
+    </div>
+    <div>
+      {hashToArray().map((com) => {
+        return <DisplayCommands 
+          key={com.command}
+          command={com.command} 
+          commandDescription={com.commandDescription} 
+          removeCommand={removeCommand}
+          changeCommand={changeCommand}
+          />
+      })}
     </div> 
     </>
     
@@ -114,7 +123,6 @@ function useTranscript(transcript, resetTranscript, finalTranscript, findCommand
         command.lastLetterIndex += transcriptLengthRef.current
         command.firstLetterIndex += transcriptLengthRef.current
         queueRef.current.addToQueue(command)
-        console.log(queueRef.current)
       }
       
       callback(prev => {

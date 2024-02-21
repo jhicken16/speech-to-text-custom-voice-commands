@@ -19,7 +19,7 @@ export default function useCommandsHash(){
     const [hash, setHash] = useState({})
 
     function addToCommands ( command, commandDescription, callback, argumentsToPass ) {
-                      
+            
         command = cleanCommand(command)
         const regex = createRegexExpression(command)
     
@@ -56,36 +56,50 @@ export default function useCommandsHash(){
 
             let removedObj = {}
             for( let x = 0; x < hashKey.length; x++){
-                if(hashKey.state[x].regex.test(command)){
-                    removedObj = hashKey.state[x]
+                if(hashKey[x].regex.test(command)){
+                    removedObj = hashKey[x]
                     setHash(prev => ({...prev,
                         [command[command.length - 1]]: [
                             ...hashKey.slice(0, x),
                             ...hashKey.slice(x+1)
                         ]
                     }))
-                    if(hashKey.state.length === 0){
-                        delete hash[command[command.length - 1]]
+                    console.log(hashKey)
+                    console.log(hashKey.length)
+                    if(hashKey.length === 1){
+                        hashRemoveKeyFormObject(command[command.length - 1])
                     }
                     return removedObj
                 }
             }
         }
 
+        function hashRemoveKeyFormObject(key){
+            setHash((prev) => {
+                delete prev[key]
+                return prev
+            })
+        }
+
         function changeCommand( newCommand, oldCommand ){
             //TODO - Also change regex expression
-            newCommand = this.cleanCommand(this.newCommand)
-            const newRegex = this.createRegexExpression(newCommand)
+            newCommand = cleanCommand(newCommand)
+            const newRegex = createRegexExpression(newCommand)
 
             if(newCommand[newCommand.length - 1] === oldCommand[oldCommand.length - 1]){
-                setHash(prev => prev.map((obj) =>
-                obj.regex.test(oldCommand) ? {...obj, command: newCommand, regex: newRegex} : obj))
+                setHash((prev) => {
+                    return ({
+                        ...prev,
+                        [newCommand[newCommand.length - 1]]: prev[newCommand[newCommand.length - 1]].map((obj) => {
+                           return obj.regex.test(oldCommand) ? {...obj, command: newCommand, regex: newRegex} : obj
+                        })
+                    })
+                })
             }
             else{
-                let oldObject = this.removeCommand(oldCommand)
+                let oldObject = removeCommand(oldCommand)
                 addToCommands(
-                    newCommand,
-                    newRegex, 
+                    newCommand, 
                     oldObject.commandDescription, 
                     oldObject.callback, 
                     oldObject.argumentsToPass)
@@ -100,6 +114,15 @@ export default function useCommandsHash(){
 
         function createRegexExpression( cleanWord ) {
             return new RegExp("[A-Z]*" + cleanWord + "[A-Z]*\\W*", "i")
+        }
+
+        //function that returns the hash as an array for display purposes
+        function hashToArray(){
+
+            //Will return array of arrays
+            const objectToArray = Object.values(hash)
+
+            return [].concat(...objectToArray)
         }
 
         //Add function to check for commands and return what is needed.
@@ -140,7 +163,7 @@ export default function useCommandsHash(){
             return
         }
 
-    return [hash, {addToCommands, removeCommand, changeCommand, checkForCommand}]
+    return [hash, {addToCommands, removeCommand, changeCommand, checkForCommand, hashToArray}]
 }
 
 
