@@ -8,7 +8,7 @@ module.exports = (app) => {
         origin: "http://localhost:3000",
         
         //just for now
-        credentials: false
+        credentials: true
     }))
 
     app.use(bodyParser.json())
