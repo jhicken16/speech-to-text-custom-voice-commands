@@ -3,6 +3,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import useCommandsHash from './dataStructures/commandsHash'
 import { deleteMethod } from './voiceMethods/commandFunctions'
 import Queue from './dataStructures/queue'
+import {sendCommands} from './fetches/sendCommands'
 
 //components
 import CreateUserCommands from './components/createUserCommands/CreateUserCommands'
@@ -26,7 +27,7 @@ function App() {
   const [text, changeState, resetText] = useTranscript(transcript, resetTranscript, finalTranscript, checkForCommand, queue)
 
   useEffect(() => {
-     addToCommands('pop', 'delete last word', deleteMethod, ' ')
+     addToCommands('pop', 'delete last word', deleteMethod, ' ', 'DEL')
      
   }, [])
 
@@ -52,6 +53,7 @@ function App() {
       <button onClick={SpeechRecognition.stopListening}>off</button>
       <p>{text[0]}</p>
       <button onClick={resetUserTranscript}>Clear Text</button>
+      <button onClick={() => sendCommands(hashToArray())}>save commands</button>
     </div>
      <div>
       <CreateUserCommands addToCommands={addToCommands}/>

@@ -18,7 +18,7 @@ import {useState} from 'react'
 export default function useCommandsHash(){
     const [hash, setHash] = useState({})
 
-    function addToCommands ( command, commandDescription, callback, argumentsToPass ) {
+    function addToCommands ( command, commandDescription, callback, argumentsToPass, functionType) {
             
         command = cleanCommand(command)
         const regex = createRegexExpression(command)
@@ -33,7 +33,8 @@ export default function useCommandsHash(){
                         regex, 
                         commandDescription, 
                         callback, 
-                        argumentsToPass
+                        argumentsToPass,
+                        functionType
                     }]
             }))
         }
@@ -45,7 +46,8 @@ export default function useCommandsHash(){
                     regex, 
                     commandDescription, 
                     callback, 
-                    argumentsToPass
+                    argumentsToPass,
+                    functionType
                 }]
             }))
         }
@@ -102,7 +104,8 @@ export default function useCommandsHash(){
                     newCommand, 
                     oldObject.commandDescription, 
                     oldObject.callback, 
-                    oldObject.argumentsToPass)
+                    oldObject.argumentsToPass,
+                    oldCommand.functionType)
             }
         }
 
