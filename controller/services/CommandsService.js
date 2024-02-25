@@ -31,6 +31,7 @@ module.exports = class CommandsService {
             if(!response){
                 throw httpError(500, 'Internal server error')
             }
+            return response
         }
         catch(err){
             if(err.status){
