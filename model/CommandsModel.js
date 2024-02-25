@@ -11,6 +11,10 @@ module.exports = class CommandsModel {
     async addCommand() {
         try{
             const response = await db.query('SELECT * FROM commands')
+            
+            if(response.rows = 0){
+                return null
+            }
 
             return response.rows
         }
