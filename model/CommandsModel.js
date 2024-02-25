@@ -33,4 +33,48 @@ module.exports = class CommandsModel {
             throw new Error(err)
         }
     }
+
+    async updateUsersCommands(userId, commands){
+
+        commands = JSON.stringify({
+            commands: commands
+        })
+
+        const statement = `UPDATE commands
+                            SET command_data = $1
+                            WHERE user_id = $2
+                            RETURNING *;`
+        const values = [commands, userId]
+
+        try{
+            const response = await db.query(statement, values)
+            if(!response){
+                return null
+            }
+            return response.rows
+        }
+        catch(err){
+            throw new Error(err)
+        }
+    }
+
+
+    async getUsersCommands(userId){
+        const statement = `SELECT * FROM commands WHERE user_id = $1`
+        const value = [userId]
+
+        try{
+            const response = await db.query(statement, value)
+
+            if(response.rows === 0){
+                return null
+            }
+
+            return response.rows
+        }
+        catch(err){
+            throw new Error(err)
+        }
+
+    }
 }

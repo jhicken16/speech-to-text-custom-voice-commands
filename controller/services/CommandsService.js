@@ -26,7 +26,15 @@ module.exports = class CommandsService {
     }
     async saveCommands(userId, commands){
         try{
-            const response = await CommandModel.addCommand(userId, commands)
+            const doesUserExist = await CommandModel.getUsersCommands(userId)
+
+            let response = null
+            if(doesUserExist){
+                response = await CommandModel.updateUsersCommands(userId, commands)
+            }
+            else{
+                response = await CommandModel.addCommand(userId, commands)
+            }
 
             if(!response){
                 throw httpError(500, 'Internal server error')
