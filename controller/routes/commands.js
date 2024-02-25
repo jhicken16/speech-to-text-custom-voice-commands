@@ -9,11 +9,27 @@ const Commands = new CommandsServices()
 module.exports = (app) => {
     app.use('/commands', router)
 
-    router.post('',checkAuthentication, async (request, response, next) => {
+    router.post('', checkAuthentication, async (request, response, next) => {
         //TODO
         const data = request.body
         console.log(data)
         console.log(await Commands.getCommands())
         response.status(200).send({message: 'just testing some think'})
+    })
+
+    router.put('', checkAuthentication, async (request, response, next) => {
+        const { id } = request.user
+        const { commands } = request.body
+
+        try{
+
+            const comList = await Commands.saveCommands(id, commands)
+            console.log(comList)
+
+            response.status(200).send(comList)
+
+        }catch(err){
+            next(err)
+        }
     })
 }
