@@ -78,7 +78,7 @@ function App() {
       })}
     </div>
       <button onClick={handleLogin}>Login</button>
-      <Login trigger={loginPopUp} /> 
+      <Login trigger={loginPopUp} handleLogin={handleLogin}/> 
 
     </>
     
