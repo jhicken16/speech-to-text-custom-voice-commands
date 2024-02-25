@@ -9,9 +9,13 @@ module.exports = class CommandsModel {
      */
 
     async addCommand(userId, commands) {
-
+    
+        commands = JSON.stringify({
+            commands: commands
+        })
+        
         const statement = `INSERT INTO commands
-                            (user_id, commands)
+                            (user_id, command_data)
                             VALUES ($1, $2)
                             RETURNING *;`
         const values = [userId, commands]

@@ -23,7 +23,7 @@ module.exports = (app) => {
 
         try{
 
-            const comList = await CommandsServices.saveCommands(id, commands)
+            const comList = await Commands.saveCommands(id, commands)
             console.log(comList)
 
             response.status(200).send(comList)
