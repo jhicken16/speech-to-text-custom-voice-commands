@@ -8,11 +8,18 @@ module.exports = class CommandsModel {
      * @returns {INT||Error} 0 added || error 
      */
 
-    async addCommand() {
+    async addCommand(userId, commands) {
+
+        const statement = `INSERT INTO commands
+                            (user_id, commands)
+                            VALUES ($1, $2)
+                            RETURNING *;`
+        const values = [userId, commands]
+
         try{
-            const response = await db.query('SELECT * FROM commands')
+            const response = await db.query(statement, values)
             
-            if(response.rows = 0){
+            if(response.rows === 0){
                 return null
             }
 
