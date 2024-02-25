@@ -9,7 +9,7 @@ const Commands = new CommandsServices()
 module.exports = (app) => {
     app.use('/commands', router)
 
-    router.post('',checkAuthentication, async (request, response, next) => {
+    router.post('', checkAuthentication, async (request, response, next) => {
         //TODO
         const data = request.body
         console.log(data)
