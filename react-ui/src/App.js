@@ -8,6 +8,7 @@ import {sendCommands} from './fetches/sendCommands'
 //components
 import CreateUserCommands from './components/createUserCommands/CreateUserCommands'
 import DisplayCommands from './components/displayuserCommands/DisplayUserCommands'
+import Login from './components/login/Login'
 
 function App() {
   
@@ -36,6 +37,13 @@ function App() {
     resetText()
     resetTranscript()
 
+  }
+
+  const [loginPopUp, setLoginPopUp] = useState(false)
+ 
+
+  function handleLogin(){
+    setLoginPopUp(prev => !prev)  
   }
   
   if(!browserSupportsSpeechRecognition){
@@ -68,7 +76,10 @@ function App() {
           changeCommand={changeCommand}
           />
       })}
-    </div> 
+    </div>
+      <button onClick={handleLogin}>Login</button>
+      <Login trigger={loginPopUp} /> 
+
     </>
     
 

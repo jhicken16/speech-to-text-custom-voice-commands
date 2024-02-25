@@ -60,10 +60,10 @@ export default function CreateUserCommands({addToCommands}){
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <label htmlFor='command'>Single Word Command:</label>
+                <label htmlFor='setCommand'>Single Word Command:</label>
                 <input 
                     type="text"
-                    id="command"
+                    id="setCommand"
                     pattern='[A-Za-z]+'
                     value={command}
                     onChange={handleCommand}
