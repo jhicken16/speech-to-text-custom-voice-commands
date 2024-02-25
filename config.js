@@ -8,5 +8,6 @@ module.exports = {
         PGPORT: process.env.PGPORT,
         PGPASSWORD: process.env.PGPASSWORD,
         PGDATABASE: process.env.PGDATABASE
-    }
+    },
+    SESSION_KEY: process.env.SESSION
 }
