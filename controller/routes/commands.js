@@ -11,10 +11,16 @@ module.exports = (app) => {
 
     router.post('', checkAuthentication, async (request, response, next) => {
         //TODO
-        const data = request.body
-        console.log(data)
-        console.log(await Commands.getCommands())
-        response.status(200).send({message: 'just testing some think'})
+        const {id} = request.user
+        
+        try{
+            const getCommands = await Commands.getCommands(id)
+            console.log(getCommands)
+            response.status(200).send(getCommands)
+        }
+        catch(err){
+            next(err)
+        }
     })
 
     router.put('', checkAuthentication, async (request, response, next) => {
