@@ -26,6 +26,7 @@ export default function Login(props){
             logUserIn(email, password)
         }
         props.handleLogin()
+        props.loadUsersCommands()
     }
 
     const isRegister = () => {

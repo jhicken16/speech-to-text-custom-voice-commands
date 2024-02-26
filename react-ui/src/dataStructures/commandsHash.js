@@ -14,9 +14,38 @@ users may choose numbers, i will have to prevent this.
 users may choose signal letter as command witch my be a uppercase depending on browser 
 */
 import {useState} from 'react'
+import { loadCommands } from '../fetches/userSaveCommands'
+import { deleteMethod, punctuationMethod } from '../voiceMethods/commandFunctions'
 
 export default function useCommandsHash(){
     const [hash, setHash] = useState({})
+
+    //fetches user commands from backed and loads them in.
+    async function loadUsersCommands(){
+        
+        try{
+
+            const response = await loadCommands()
+            const commandList = response[0].command_data.commands
+        
+            for(let x = 0; x < commandList.length; x++){
+                switch (commandList[x].funcType){
+                    case "DEL":
+                        commandList[x].callback = deleteMethod
+                        break;
+                    case "PUNC":
+                        commandList[x].callback = punctuationMethod
+                        break;
+                    default:
+                        break;
+                }
+                addToCommands(commandList[x].command, commandList[x].commandDescription, commandList[x].callback, commandList[x].argumentsToPass, commandList[x].functionType)
+            }
+        }catch(err){
+            console.log(err)
+        }
+        
+    }
 
     function addToCommands ( command, commandDescription, callback, argumentsToPass, functionType) {
             
@@ -166,7 +195,7 @@ export default function useCommandsHash(){
             return
         }
 
-    return [hash, {addToCommands, removeCommand, changeCommand, checkForCommand, hashToArray}]
+    return [hash, {addToCommands, removeCommand, changeCommand, checkForCommand, hashToArray, loadUsersCommands}]
 }
 
 

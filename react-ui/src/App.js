@@ -21,7 +21,7 @@ function App() {
     finalTranscript,
   } = useSpeechRecognition()
 
-  const [hash, {addToCommands, removeCommand, changeCommand, checkForCommand, hashToArray}] = useCommandsHash()
+  const [hash, {addToCommands, removeCommand, changeCommand, checkForCommand, hashToArray, loadUsersCommands}] = useCommandsHash()
 
 
   const queue = new Queue()
@@ -78,7 +78,7 @@ function App() {
       })}
     </div>
       <button onClick={handleLogin}>Login</button>
-      <Login trigger={loginPopUp} handleLogin={handleLogin}/> 
+      <Login trigger={loginPopUp} handleLogin={handleLogin} loadUsersCommands={loadUsersCommands}/> 
 
     </>
     

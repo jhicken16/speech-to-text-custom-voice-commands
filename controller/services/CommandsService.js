@@ -6,10 +6,10 @@ const CommandModel = new CommandsModel()
 module.exports = class CommandsService {
 
 
-    async getCommands(){
+    async getCommands(id){
         try{
             //change to get commands 
-            const response = await CommandModel.addCommand()
+            const response = await CommandModel.getUsersCommands(id)
 
             if(!response){
                 throw httpError(404, 'Resource not found')
@@ -20,7 +20,6 @@ module.exports = class CommandsService {
             if(err.status){
                 throw err
             }
-            console.log(err)
             throw httpError(500, 'Internal server error')
         }
     }
@@ -29,10 +28,12 @@ module.exports = class CommandsService {
             const doesUserExist = await CommandModel.getUsersCommands(userId)
 
             let response = null
-            if(doesUserExist){
+            console.log(commands)
+            if(doesUserExist.length !== 0){
                 response = await CommandModel.updateUsersCommands(userId, commands)
             }
             else{
+                console.log('user did not exist')
                 response = await CommandModel.addCommand(userId, commands)
             }
 
