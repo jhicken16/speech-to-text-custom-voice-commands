@@ -28,10 +28,12 @@ module.exports = class CommandsService {
             const doesUserExist = await CommandModel.getUsersCommands(userId)
 
             let response = null
-            if(doesUserExist){
+            console.log(commands)
+            if(doesUserExist.length !== 0){
                 response = await CommandModel.updateUsersCommands(userId, commands)
             }
             else{
+                console.log('user did not exist')
                 response = await CommandModel.addCommand(userId, commands)
             }
 

@@ -25,16 +25,17 @@ module.exports = (app) => {
 
     router.put('', checkAuthentication, async (request, response, next) => {
         const { id } = request.user
-        const { commands } = request.body
+        const { commandsArray } = request.body
 
         try{
 
-            const comList = await Commands.saveCommands(id, commands)
+            const comList = await Commands.saveCommands(id, commandsArray)
             console.log(comList)
 
             response.status(200).send(comList)
 
-        }catch(err){
+        }
+        catch(err){
             next(err)
         }
     })

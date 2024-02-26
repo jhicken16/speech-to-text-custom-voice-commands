@@ -1,14 +1,14 @@
 const sendCommands = async(commandsArray) => {
     try{
         const response = await fetch('http://localhost:4000/commands', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-type': 'application/json'
             },
-            body: JSON.stringify(
+            body: JSON.stringify({
                 commandsArray
-            )
-            //include credentials
+            }),
+            credentials: 'include'
         })
 
         const data = await response.json()
