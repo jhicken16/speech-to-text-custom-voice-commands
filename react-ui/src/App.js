@@ -8,7 +8,7 @@ import {sendCommands} from './fetches/sendCommands'
 //components
 import CreateUserCommands from './components/createUserCommands/CreateUserCommands'
 import DisplayCommands from './components/displayuserCommands/DisplayUserCommands'
-import Login from './components/login/Login'
+import Nav from './components/nav/Nav'
 
 function App() {
   
@@ -38,13 +38,6 @@ function App() {
     resetTranscript()
 
   }
-
-  const [loginPopUp, setLoginPopUp] = useState(false)
- 
-
-  function handleLogin(){
-    setLoginPopUp(prev => !prev)  
-  }
   
   if(!browserSupportsSpeechRecognition){
     return <h1>sorry browser does not support.</h1>
@@ -52,6 +45,7 @@ function App() {
 
   return (
     <>
+    <Nav loadUserCommands={loadUsersCommands}/>
     <div>
       <h3>Mic: {listening ? 'on' : 'off'}</h3>
       <button onClick={() => {
@@ -77,9 +71,6 @@ function App() {
           />
       })}
     </div>
-      <button onClick={handleLogin}>Login</button>
-      <Login trigger={loginPopUp} handleLogin={handleLogin} loadUsersCommands={loadUsersCommands}/> 
-
     </>
     
 
