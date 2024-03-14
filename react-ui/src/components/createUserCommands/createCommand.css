@@ -1,0 +1,13 @@
+#create-commands {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#create-commands > * {
+    margin-bottom: 0.5em;
+}
+
+#create-commands select {
+    margin: 0 1em 1em 1em;
+}

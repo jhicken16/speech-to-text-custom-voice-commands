@@ -10,6 +10,9 @@ import CreateUserCommands from './components/createUserCommands/CreateUserComman
 import DisplayCommands from './components/displayuserCommands/DisplayUserCommands'
 import Nav from './components/nav/Nav'
 
+//css
+import './App.css'
+
 function App() {
   
   const {
@@ -45,35 +48,35 @@ function App() {
 
   return (
     <>
-    <Nav loadUserCommands={loadUsersCommands}/>
-    <div>
-      <h3>Mic: {listening ? 'on' : 'off'}</h3>
-      <button onClick={() => {
-        changeState(0)
-        SpeechRecognition.startListening({continuous: true})
-      }}>on</button>
-      <button onClick={SpeechRecognition.stopListening}>off</button>
-      <p>{text[0]}</p>
-      <button onClick={resetUserTranscript}>Clear Text</button>
-      <button onClick={() => sendCommands(hashToArray())}>save commands</button>
-    </div>
-     <div>
-      <CreateUserCommands addToCommands={addToCommands}/>
-    </div>
-    <div>
-      {hashToArray().map((com) => {
-        return <DisplayCommands 
-          key={com.command}
-          command={com.command} 
-          commandDescription={com.commandDescription} 
-          removeCommand={removeCommand}
-          changeCommand={changeCommand}
-          />
-      })}
+      <Nav loadUserCommands={loadUsersCommands}/>
+      <div id="main">
+        <div id="transcript">
+          <h3>Mic: {listening ? 'on' : 'off'}</h3>
+          <button onClick={() => {
+            changeState(0)
+            SpeechRecognition.startListening({continuous: true})
+          }}>on</button>
+          <button onClick={SpeechRecognition.stopListening}>off</button>
+          <p>{text[0]}</p>
+          <button onClick={resetUserTranscript}>Clear Text</button>
+          <button onClick={() => sendCommands(hashToArray())}>save commands</button>
+      </div>
+      <div id="side-bar" >
+        <CreateUserCommands addToCommands={addToCommands}/>
+        <div id="command-list" >
+          {hashToArray().map((com) => {
+            return <DisplayCommands 
+              key={com.command}
+              command={com.command} 
+              commandDescription={com.commandDescription} 
+              removeCommand={removeCommand}
+              changeCommand={changeCommand}
+              />
+          })}
+        </div>
+      </div>
     </div>
     </>
-    
-
   );
 }
 
