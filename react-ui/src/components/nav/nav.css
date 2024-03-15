@@ -1,0 +1,16 @@
+#nav {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px black solid;
+    align-items: center;
+}
+
+#title {
+    padding-left: 1em;
+}
+
+#login-btn {
+    height: 3em;
+    width: 6em;
+    margin-right: 5%;
+}

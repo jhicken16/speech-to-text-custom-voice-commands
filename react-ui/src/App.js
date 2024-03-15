@@ -8,7 +8,10 @@ import {sendCommands} from './fetches/sendCommands'
 //components
 import CreateUserCommands from './components/createUserCommands/CreateUserCommands'
 import DisplayCommands from './components/displayuserCommands/DisplayUserCommands'
-import Login from './components/login/Login'
+import Nav from './components/nav/Nav'
+
+//css
+import './App.css'
 
 function App() {
   
@@ -38,13 +41,6 @@ function App() {
     resetTranscript()
 
   }
-
-  const [loginPopUp, setLoginPopUp] = useState(false)
- 
-
-  function handleLogin(){
-    setLoginPopUp(prev => !prev)  
-  }
   
   if(!browserSupportsSpeechRecognition){
     return <h1>sorry browser does not support.</h1>
@@ -52,37 +48,35 @@ function App() {
 
   return (
     <>
-    <div>
-      <h3>Mic: {listening ? 'on' : 'off'}</h3>
-      <button onClick={() => {
-        changeState(0)
-        SpeechRecognition.startListening({continuous: true})
-      }}>on</button>
-      <button onClick={SpeechRecognition.stopListening}>off</button>
-      <p>{text[0]}</p>
-      <button onClick={resetUserTranscript}>Clear Text</button>
-      <button onClick={() => sendCommands(hashToArray())}>save commands</button>
+      <Nav loadUserCommands={loadUsersCommands}/>
+      <div id="main">
+        <div id="transcript">
+          <h3>Mic: {listening ? 'on' : 'off'}</h3>
+          <button onClick={() => {
+            changeState(0)
+            SpeechRecognition.startListening({continuous: true})
+          }}>on</button>
+          <button onClick={SpeechRecognition.stopListening}>off</button>
+          <p>{text[0]}</p>
+          <button onClick={resetUserTranscript}>Clear Text</button>
+          <button onClick={() => sendCommands(hashToArray())}>save commands</button>
+      </div>
+      <div id="side-bar" >
+        <CreateUserCommands addToCommands={addToCommands}/>
+        <div id="command-list" >
+          {hashToArray().map((com) => {
+            return <DisplayCommands 
+              key={com.command}
+              command={com.command} 
+              commandDescription={com.commandDescription} 
+              removeCommand={removeCommand}
+              changeCommand={changeCommand}
+              />
+          })}
+        </div>
+      </div>
     </div>
-     <div>
-      <CreateUserCommands addToCommands={addToCommands}/>
-    </div>
-    <div>
-      {hashToArray().map((com) => {
-        return <DisplayCommands 
-          key={com.command}
-          command={com.command} 
-          commandDescription={com.commandDescription} 
-          removeCommand={removeCommand}
-          changeCommand={changeCommand}
-          />
-      })}
-    </div>
-      <button onClick={handleLogin}>Login</button>
-      <Login trigger={loginPopUp} handleLogin={handleLogin} loadUsersCommands={loadUsersCommands}/> 
-
     </>
-    
-
   );
 }
 

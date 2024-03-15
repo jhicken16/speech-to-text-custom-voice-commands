@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 import { deleteMethod, punctuationMethod } from "../../voiceMethods/commandFunctions";
 
+import './createCommand.css'
+
 export default function CreateUserCommands({addToCommands}){
 
     const [command, setCommand] = useState('')
@@ -59,39 +61,40 @@ export default function CreateUserCommands({addToCommands}){
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
-                <label htmlFor='setCommand'>Single Word Command:</label>
-                <input 
-                    type="text"
-                    id="setCommand"
-                    pattern='[A-Za-z]+'
-                    value={command}
-                    onChange={handleCommand}
-                />
-
-                <select value={selectedFunction} onChange={handleSelectingFunction}>
-                    <option value={null}> Please Select</option>
-                    <option value="Delete Command"> Delete Command </option>
-                    <option value="Add Punctuation"> Add Punctuation </option>
-                </select>
-                <label htmlFor='description'>Short Description of Command:</label>
-                    <input
+            <div>
+                <form onSubmit={handleSubmit} id="create-commands" >
+                    <label htmlFor='setCommand'>Single Word Command:</label>
+                    <input 
                         type="text"
-                        id="description"
-                        value={description}
-                        onChange={handleDescription}
+                        id="setCommand"
+                        pattern='[A-Za-z]+'
+                        value={command}
+                        onChange={handleCommand}
                     />
-                <label htmlFor="charInput">{selectedFunction === "Delete Command" ? 'Delete Up To Char' : 'Add Char To Last Word'}</label>
-                    <input
-                    type="text"
-                    id="charInput"
-                    maxLength="1"
-                    value={selectedChar}
-                    onChange={handleCharInputChange}
-                    />
-                <button type="submit">Add Command</button>
-            </form>
-            
+                    <label htmlFor="functions" >Choose Function</label>
+                    <select value={selectedFunction} onChange={handleSelectingFunction} id="functions" >
+                        <option value={null}> Please Select</option>
+                        <option value="Delete Command"> Delete Command </option>
+                        <option value="Add Punctuation"> Add Punctuation </option>
+                    </select>
+                    <label htmlFor='description'>Short Description of Command:</label>
+                        <input
+                            type="text"
+                            id="description"
+                            value={description}
+                            onChange={handleDescription}
+                        />
+                    <label htmlFor="charInput">{selectedFunction === "Delete Command" ? 'Delete Up To Char' : 'Add Char To Last Word'}</label>
+                        <input
+                        type="text"
+                        id="charInput"
+                        maxLength="1"
+                        value={selectedChar}
+                        onChange={handleCharInputChange}
+                        />
+                    <button type="submit">Add Command</button>
+                </form>
+            </div>
 
         </>
     )
