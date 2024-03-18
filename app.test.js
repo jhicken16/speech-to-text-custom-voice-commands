@@ -12,8 +12,12 @@ describe("POST /register", () => {
             expect(response.statusCode).toBe(200)
 
         })
-        // it("return session coolie for authentication", () => {
-
-        // })
+        it("return session cookie for authentication", async () => {
+            const response = await request(app).post("/auth/register").send({
+                email: "testenv3@gmail.com",
+                password: "testenv"
+            })
+            expect(response.headers['content-type']).toEqual(expect.stringContaining("json"))
+        })
     })
 })
