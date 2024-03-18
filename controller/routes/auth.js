@@ -5,10 +5,13 @@ const { body, validationResult } = require('express-validator')
 
 //import classes to run auth.
 const AuthService = require('../services/AuthService')
-const Authentication = new AuthService()
 
 
-module.exports = (app, passport) => {
+
+module.exports = (app, passport, database) => {
+
+    const Authentication = new AuthService(database)
+
     app.use('/auth', router)
 
     router.post('/register',

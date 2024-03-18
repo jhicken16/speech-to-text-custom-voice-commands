@@ -3,9 +3,10 @@ const bcrypt = require('bcrypt')
 
 const usersModel = require('../../model/UsersModel')
 
-const Users = new usersModel()
-
 module.exports = class AuthService {
+    constructor(database){
+        this.Users = new usersModel(database)
+    }
 
     async register(data) {
         
@@ -13,14 +14,14 @@ module.exports = class AuthService {
         const { email } = data
 
         try{
-            const doesEmailExist = await Users.findByEmail(email)
+            const doesEmailExist = await this.Users.findByEmail(email)
 
             if(doesEmailExist){
                 throw httpError(409, 'Email already in use.')
             }
 
             //user doesn't exist create new user.
-            return await Users.createCustomer(data)
+            return await this.Users.createCustomer(data)
         }
         catch(err){
             if(err.status){
@@ -36,7 +37,7 @@ module.exports = class AuthService {
         const { email } = data
 
         try{
-            const userRow = await Users.findByEmail(email)
+            const userRow = await this.Users.findByEmail(email)
 
             if(!userRow){
                 throw httpError(401, 'no rows')

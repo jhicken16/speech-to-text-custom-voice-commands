@@ -1,15 +1,16 @@
 const httpError = require('http-errors')
-const CommandsModel = require('../../model/CommandsModel')
-
-const CommandModel = new CommandsModel()
+const CommandsModel = require('../../model/CommandsModel') 
 
 module.exports = class CommandsService {
 
+    constructor(database){
+        this.CommandModel = new CommandsModel(database)
+    }
 
     async getCommands(id){
         try{
             //change to get commands 
-            const response = await CommandModel.getUsersCommands(id)
+            const response = await this.CommandModel.getUsersCommands(id)
 
             if(!response){
                 throw httpError(404, 'Resource not found')
@@ -25,16 +26,16 @@ module.exports = class CommandsService {
     }
     async saveCommands(userId, commands){
         try{
-            const doesUserExist = await CommandModel.getUsersCommands(userId)
+            const doesUserExist = await this.CommandModel.getUsersCommands(userId)
 
             let response = null
             console.log(commands)
             if(doesUserExist.length !== 0){
-                response = await CommandModel.updateUsersCommands(userId, commands)
+                response = await this.CommandModel.updateUsersCommands(userId, commands)
             }
             else{
                 console.log('user did not exist')
-                response = await CommandModel.addCommand(userId, commands)
+                response = await this.CommandModel.addCommand(userId, commands)
             }
 
             if(!response){

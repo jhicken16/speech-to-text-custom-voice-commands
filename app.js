@@ -1,13 +1,15 @@
 const express = require('express')
 const { PORT } = require('./config')
 
-const loaders = require('./controller/loaders')
+module.exports = (database) => {
 
-const app = express()
+    const loaders = require('./controller/loaders')
 
-loaders(app)
+    const app = express()
 
+    loaders(app, database)
 
-app.listen(PORT, () => {
-    console.log(`Server running on prot: ${PORT}`)
-})
+    return app
+
+}
+

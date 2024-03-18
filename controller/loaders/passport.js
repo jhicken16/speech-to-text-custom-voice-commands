@@ -5,9 +5,11 @@ const GoogleStrategy = require('passport-google-oauth2')
 const { G } = require('../../config')
 
 const AuthService = require('../services/AuthService')
-const Authentication = new AuthService()
 
-module.exports = (app) => {
+
+module.exports = (app, database) => {
+
+    const Authentication = new AuthService(database)
 
     app.use(passport.initialize())
     app.use(passport.session())
