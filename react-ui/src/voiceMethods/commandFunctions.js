@@ -9,7 +9,6 @@ function deleteMethod(frontIndex, backIndex, to, text){
     
     //to skip space that is before command word.
     frontIndex -= 2
-    
     // Make sure command was not the first word
     if(frontIndex < 1){
         return text
@@ -17,11 +16,8 @@ function deleteMethod(frontIndex, backIndex, to, text){
 
     for(frontIndex; frontIndex > 0; frontIndex--){
         if(text[frontIndex] === to){
-            
             const beforeCommand = text.substring(0, frontIndex)
-            
             const afterCommand = text.substring(backIndex)
-            
             return beforeCommand + afterCommand
         }
     }
