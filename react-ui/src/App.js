@@ -10,6 +10,9 @@ import CreateUserCommands from './components/createUserCommands/CreateUserComman
 import DisplayCommands from './components/displayuserCommands/DisplayUserCommands'
 import Nav from './components/nav/Nav'
 
+//helper Functions
+import punctuationForIndexShift from './helpers/punctuationForIndexShift'
+
 //css
 import './App.css'
 
@@ -98,7 +101,7 @@ function useTranscript(transcript, resetTranscript, finalTranscript, findCommand
   useEffect(() => {
 
     if(finalTranscript !== ''){
-
+      //maybe eddit final transcipt before adding it to state
       callback(prev => {
         let toAdd = prev.substring(0, transcriptLengthRef.current) + ' ' + finalTranscript
 
@@ -107,11 +110,17 @@ function useTranscript(transcript, resetTranscript, finalTranscript, findCommand
           queue works on first in first out. will change text on first command need to take last amount 
           of text removed and change index of next element in queue by that amount.
         */
+        const lengthBeforeEdit = toAdd.length
         while(queueRef.current.head !== null){
           
-          let lengthBeforeEdit = toAdd.length
-
           const head = queueRef.current.removeHead()
+          
+          if (/Edg/.test(navigator.userAgent)){
+            const indexDiff = punctuationForIndexShift(toAdd, head.data.firstLetterIndex, head.data.command)
+            head.data.firstLetterIndex += indexDiff
+            head.data.lastLetterIndex += indexDiff
+          }
+          
           toAdd = head.data.callback(head.data.firstLetterIndex, head.data.lastLetterIndex, head.data.argumentsToPass, toAdd)
 
           let lengthAfterEdit = toAdd.length
@@ -131,7 +140,6 @@ function useTranscript(transcript, resetTranscript, finalTranscript, findCommand
 
     else if(transcript !== ''){
       
-      //console.log(findCommandAndProcess(transcript))
       const command = findCommandAndProcess(transcript)
 
       if(command){
