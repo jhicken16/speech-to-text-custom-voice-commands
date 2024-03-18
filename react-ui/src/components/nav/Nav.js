@@ -17,7 +17,7 @@ export default function Nav({ loadUserCommands }){
                 <button id="login-btn" onClick={handleLogin}>Login</button>
                 
             </div>
-            <Login trigger={ loginPopUp } loadUserCommands={ loadUserCommands } />
+            <Login trigger={ loginPopUp } loadUserCommands={ loadUserCommands } handleLogin={handleLogin}/>
         </>
     )
 }

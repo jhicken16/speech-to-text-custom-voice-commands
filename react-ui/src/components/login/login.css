@@ -16,3 +16,17 @@
 #login-div form input {
     margin-bottom: 1em;
 }
+.error {
+    background-color: rgba(255, 0, 0, 0.397);
+}
+#loginHeader{
+    width: 100%;
+    display: inline;
+}
+#title{
+    width: 30%;
+    display:inline-block;
+}
+#loginHeader button {
+    float: right;
+}

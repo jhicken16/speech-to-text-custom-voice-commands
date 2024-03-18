@@ -2,12 +2,15 @@ import { useState } from 'react'
 import { logUserIn, registerUser } from '../../fetches/logAndRegister'
 import './login.css'
 
+
 export default function Login(props){
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const [register, setRegister] = useState(false)
+
+    const [error, setError] = useState(null)
     
 
     const handleEmailChange = (event) => {
@@ -18,16 +21,29 @@ export default function Login(props){
         setPassword(event.target.value);
     }
 
-    const handleSubmit = (event) => {
+    const handleError = (response) => {
+        setError(response.message)
+    }
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        let response
         if(register){
-            registerUser(email, password)
+           response = await registerUser(email, password)
         }
         else{
-            logUserIn(email, password)
+           response = await logUserIn(email, password)
         }
-        props.handleLogin()
-        props.loadUsersCommands()
+
+        if (!response.ok){
+            //add error logic preevnt other code from running
+            handleError(response)
+        }
+        else{
+            props.handleLogin()
+            props.loadUserCommands()
+        }
+
     }
 
     const isRegister = () => {
@@ -40,7 +56,12 @@ export default function Login(props){
     return (props.trigger) ? (
         <div id="login-div">
             <div>
-                {register ? <h3>Register</h3> : <h3>Login</h3>}
+                <div id="loginHeader">
+                    {register ? <h3 id="title">Register</h3> : <h3 id="title">Login</h3>}
+                    <button onClick={props.handleLogin}>x</button>
+                </div>
+         
+                {error ? <p className="error"> {error} </p> : null}
                 <form onSubmit={handleSubmit}>
                     <input type="email" value={email} onChange={handleEmailChange} placeholder="Email" />
                     <input type="password" value={password} onChange={handlePasswordChange} placeholder="Password" />
