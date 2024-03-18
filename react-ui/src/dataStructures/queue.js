@@ -42,7 +42,6 @@ export default class Queue{
 
     //changes the indexes by amount that removed from text to keep indexes relevant needs to be updated when head is new.
     changeIndexes(amount){
-        console.log(this.head)
         this.head.data.firstLetterIndex += amount
         this.head.data.lastLetterIndex += amount
     }
