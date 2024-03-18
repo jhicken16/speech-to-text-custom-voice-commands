@@ -18,6 +18,7 @@
 }
 .error {
     background-color: rgba(255, 0, 0, 0.397);
+    width: 100%;
 }
 #loginHeader{
     width: 100%;

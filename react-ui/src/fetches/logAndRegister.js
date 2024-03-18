@@ -19,7 +19,7 @@ const logUserIn = async (email, password) => {
         return data
     }
     catch(err){
-        console.log(err)
+        return err
     }
 }
 
@@ -37,13 +37,14 @@ const registerUser = async (email, password) =>{
         })
 
         const data = await response.json()
-        if(!response){
+        if(!response.ok){
             throw new Error(`http error! status: ${response.status}, message: ${data.message}`)
         }
         return data
     }
     catch(err){
-        console.log(err)
+        
+        return err
     }
 }
 

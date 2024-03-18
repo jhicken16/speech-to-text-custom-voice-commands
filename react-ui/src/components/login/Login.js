@@ -34,8 +34,8 @@ export default function Login(props){
         else{
            response = await logUserIn(email, password)
         }
-
-        if (!response.ok){
+        console.log(response)
+        if (response instanceof Error){
             //add error logic preevnt other code from running
             handleError(response)
         }
