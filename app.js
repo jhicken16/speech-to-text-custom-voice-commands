@@ -7,7 +7,4 @@ const app = express()
 
 loaders(app)
 
-
-app.listen(PORT, () => {
-    console.log(`Server running on prot: ${PORT}`)
-})
+module.exports = app
