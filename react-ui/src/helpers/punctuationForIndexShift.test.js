@@ -10,4 +10,13 @@ describe('function that returns the difference between the old index of the firs
             punctuationForIndexShift(str, oldIndex, command)
         ).toBe(3)
     })
+    it('should remain 3 if command is in different case', () => {
+        const str = 'Hi, I am a developer, working on a speech to text app. POP'
+        const command = 'pop'
+        const oldIndex = 52
+
+        expect(
+            punctuationForIndexShift(str, oldIndex, command)
+        ).toBe(3)
+    })
 })
