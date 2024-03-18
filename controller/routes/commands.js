@@ -4,9 +4,11 @@ const { checkAuthentication } = require('../utility/helpers')
 
 const CommandsServices = require('../services/CommandsService')
 
-const Commands = new CommandsServices()
 
-module.exports = (app) => {
+
+module.exports = (app, database) => {
+
+    const Commands = new CommandsServices(database)
     app.use('/commands', router)
 
     router.post('', checkAuthentication, async (request, response, next) => {

@@ -1,10 +1,15 @@
 const express = require('express')
 const { PORT } = require('./config')
 
-const loaders = require('./controller/loaders')
+module.exports = (database) => {
 
-const app = express()
+    const loaders = require('./controller/loaders')
 
-loaders(app)
+    const app = express()
 
-module.exports = app
+    loaders(app, database)
+
+    return app
+
+}
+

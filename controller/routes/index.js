@@ -1,9 +1,9 @@
 const commands = require('./commands')
 const auth = require('./auth')
 
-module.exports = (app, pass) => {
+module.exports = (app, pass, database) => {
 
-    auth(app, pass)
-    commands(app)
+    auth(app, pass, database)
+    commands(app, database)
     
 }

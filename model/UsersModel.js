@@ -1,4 +1,3 @@
-const db = require('./db')
 const bcrypt = require('bcrypt')
 
 module.exports = class CustomerModel {
@@ -7,10 +6,15 @@ module.exports = class CustomerModel {
      * @param {STRING} email 
      * @returns {Object|null} Users row if found || null if user not found
      */
+
+    constructor(database){
+        this.db = database
+    }
+
     async findByEmail(email) {
 
         try{ 
-            const response = await db.query('SELECT * FROM users WHERE email = $1', [email])
+            const response = await this.db.query('SELECT * FROM users WHERE email = $1', [email])
             if(response.rows.length === 0){
                 
                 return null
@@ -35,7 +39,7 @@ module.exports = class CustomerModel {
         data.password = await bcrypt.hash(data.password, salt)
         
         try{
-            const response = await db.query('INSERT INTO users(email, password) VALUES($1, $2) RETURNING id, email', 
+            const response = await this.db.query('INSERT INTO users(email, password) VALUES($1, $2) RETURNING id, email', 
                 [data.email, data.password]);
             return response.command
         }
@@ -47,7 +51,7 @@ module.exports = class CustomerModel {
     async customerById(id) {
 
         try{
-            const response = await db.query('Select * FROM users WHERE id = $1',
+            const response = await this.db.query('Select * FROM users WHERE id = $1',
             [id])
             if (response.rows.length === 0){
                 return null 
@@ -63,7 +67,7 @@ module.exports = class CustomerModel {
     async allUsers() {
 
         try{
-            const response = await db.query('SELECT email FROM users')
+            const response = await this.db.query('SELECT email FROM users')
             if (response.rows.length === 0){
                 return null
             }

@@ -12,7 +12,7 @@ describe("POST /register", () => {
             expect(response.statusCode).toBe(200)
 
         })
-        it("return session cookie for authentication", async () => {
+        it("return content type of json", async () => {
             const response = await request(app).post("/auth/register").send({
                 email: "testenv3@gmail.com",
                 password: "testenv"
